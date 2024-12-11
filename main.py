@@ -2,8 +2,8 @@ import csv
 import hash
 import package
 
-hash_table = hash.ChainingHashTable()
 
+hash_table = hash.ChainingHashTable()
 
 def loadPackageData():
     with open("WGUPS Package File-cleanup.csv") as packageCSV:
@@ -21,7 +21,18 @@ def loadPackageData():
 
             #create package object
             all_packages = package.Package(package_id, address, city, state, zip_code, delivery_deadline, weight, special_notes)
-            print(all_packages)
+            # print(all_packages)
+
+            #insert into hash table
+
+            hash_table.insert(package_id,all_packages)
+
+
+
 
 loadPackageData()
 
+for i in range(len(hash_table.table) + 1):
+    print("Package: {}".format(hash_table.table[i - 1]))  # 1 to 11 is sent to myHash.search()
+
+# print(hash_table)
