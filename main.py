@@ -44,7 +44,13 @@ def load_distance_data():
     with open("WGUPS Distance Table-cleaned.csv") as distance_CSV_file:
         csv_reader = csv.reader(distance_CSV_file, delimiter=',')
         next(csv_reader)  # skip header
-        for row  in csv_reader:
+        for row in csv_reader:
+            for num in range(len(row)):
+                try:
+                    row[num] = float(row[num])
+                except ValueError:
+                    pass
+
             distance_data.append(row)
 
 
@@ -52,4 +58,11 @@ def load_distance_data():
 
 
 load_distance_data()
-print(distance_data)
+
+#validate distance data
+# print(distance_data[5][2])
+# print(distance_data[2][5])
+#
+# for i in range(27):
+#     print(distance_data[i])
+
