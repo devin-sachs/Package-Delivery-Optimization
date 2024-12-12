@@ -2,14 +2,17 @@ import csv
 import hash
 import package
 
+distance_data = []
+address_data  = []
+
 
 hash_table = hash.ChainingHashTable()
 
-def loadPackageData():
+def load_package_data():
     with open("WGUPS Package File-cleanup.csv") as packageCSV:
-        packageRows = csv.reader(packageCSV, delimiter=',')
-        next(packageRows)  # skip header
-        for package_csv in packageRows:
+        package_rows = csv.reader(packageCSV, delimiter=',')
+        next(package_rows)  # skip header
+        for package_csv in package_rows:
             package_id = package_csv[0]
             address = package_csv[1]
             city = package_csv[2]
@@ -30,9 +33,23 @@ def loadPackageData():
 
 
 
-loadPackageData()
+load_package_data()
 
 for i in range(len(hash_table.table) + 1):
-    print("Package: {}".format(hash_table.table[i - 1]))  # 1 to 11 is sent to myHash.search()
+    print("Package: {}".format(hash_table.table[i - 1]))
 
 # print(hash_table)
+
+def load_distance_data():
+    with open("WGUPS Distance Table-cleaned.csv") as distance_CSV_file:
+        csv_reader = csv.reader(distance_CSV_file, delimiter=',')
+        next(csv_reader)  # skip header
+        for row  in csv_reader:
+            distance_data.append(row)
+
+
+            #insert into hash table
+
+
+load_distance_data()
+print(distance_data)
