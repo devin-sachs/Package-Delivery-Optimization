@@ -35,9 +35,11 @@ def load_package_data():
 
 load_package_data()
 
-for i in range(len(hash_table.table) + 1):
-    print("Package: {}".format(hash_table.table[i - 1]))
+#validating hash table and that packages were inserted properly
 
+# for i in range(len(hash_table.table) + 1):
+#     print("Package: {}".format(hash_table.table[i - 1]))
+#
 # print(hash_table)
 
 def load_distance_data():
@@ -66,3 +68,14 @@ load_distance_data()
 # for i in range(27):
 #     print(distance_data[i])
 
+
+def load_address_data():
+    with open("WGUPS Address Table-cleaned.csv" , encoding='utf-8-sig') as address_CSV_file:
+        csv_reader = csv.reader(address_CSV_file, delimiter=',')
+        for row in csv_reader:
+            address_data.extend(row) #using extend to only have a one-dimensional list
+
+load_address_data()
+
+# validate address data
+# print(address_data)
