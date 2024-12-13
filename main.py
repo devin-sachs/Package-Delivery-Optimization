@@ -79,3 +79,9 @@ load_address_data()
 
 # validate address data
 # print(address_data)
+
+def distance_between(address1,address2):
+    return distance_data[address1][address2]
+
+#validate distance between function
+print(distance_between(1,2))
