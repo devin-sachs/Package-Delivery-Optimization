@@ -12,7 +12,7 @@ class Package:
 
 
     def __str__(self):  # overwite print(Movie) otherwise it will print object reference
-        return "%s, %s, %s, %s, %s %s %s" % (self.package_id, self.address, self.city, self.state, self.zip_code, self.weight, self.delivery_status)
+        return "%s, %s, %s, %s, %s, %s %s %s" % (self.package_id, self.address, self.city, self.state, self.zip_code, self.delivery_deadline, self.weight, self.delivery_status)
 
 
     def set_status(self, input_status):

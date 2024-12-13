@@ -25,7 +25,7 @@ def load_package_data():
 
             #create package object
             all_packages = package.Package(package_id, address, city, state, zip_code, delivery_deadline, weight, special_notes)
-            print(all_packages)
+            # print(all_packages)
 
             #insert into hash table
 
@@ -86,79 +86,101 @@ def distance_between(address1,address2):
     return distance_data[address1][address2]
 
 #validate distance between function
-#print(distance_between("4001 South 700 East","177 W Price Ave"))
+# print(distance_between("4001 South 700 East","177 W Price Ave"))
 
 def min_distance(from_address,truck_packages):
     for truck_package in truck_packages:
-        distance_between(from_address, truck_package.packages[truck_package.address],)
+        return distance_between(from_address, truck_packages.packages[truck_package.address])
+
+# min_distance()
+# TO DO - COME BACK TO WORK ON THIS FUNCTION
 
 truck1 = truck.Truck(1)
 truck2 = truck.Truck(2)
 truck3 = truck.Truck(3)
 
-# Loading truck 3 with certain special notes packages
-truck3.load_package(hash_table.search("9")) # package has wrong address
-truck3.load_package(hash_table.search("6")) # some don't arrive until 9:05am
-truck3.load_package(hash_table.search("25")) #the rest don't fit with the rest of the trucks
-truck3.load_package(hash_table.search("28"))
-truck3.load_package(hash_table.search("32"))
-truck3.load_package(hash_table.search("1"))
-truck3.load_package(hash_table.search("2"))
-truck3.load_package(hash_table.search("4"))
+# Manually loading packages in trucks
 
+def load_all_trucks():
+    # Loading truck 3 with certain special notes packages
+    truck3.load_package(hash_table.search("9"))  # package has wrong address
+    truck3.load_package(hash_table.search("6"))  # some don't arrive until 9:05am
+    truck3.load_package(hash_table.search("25"))  # the rest don't fit with the rest of the trucks
+    truck3.load_package(hash_table.search("28"))
+    truck3.load_package(hash_table.search("32"))
 
-#Loading truck 2
-truck2.load_package(hash_table.search("3")) # packages must be on truck 2 or delivered together
-truck2.load_package(hash_table.search("18"))
-truck2.load_package(hash_table.search("36"))
-truck2.load_package(hash_table.search("38"))
+    truck3.load_package(hash_table.search("27"))
+    truck3.load_package(hash_table.search("33"))
+    truck3.load_package(hash_table.search("35"))
+    truck3.load_package(hash_table.search("39"))
 
-truck2.load_package(hash_table.search("20"))
-truck2.load_package(hash_table.search("16"))
-truck2.load_package(hash_table.search("13"))
-truck2.load_package(hash_table.search("14"))
+    truck3.load_package(hash_table.search("2"))
+    truck3.load_package(hash_table.search("4"))
 
-truck2.load_package(hash_table.search("15"))
-truck2.load_package(hash_table.search("19"))
-truck2.load_package(hash_table.search("7"))
-truck2.load_package(hash_table.search("8"))
+    # Loading truck 2
+    truck2.load_package(hash_table.search("3"))  # packages must be on truck 2 or delivered together
 
-truck2.load_package(hash_table.search("10"))
-truck2.load_package(hash_table.search("11"))
-truck2.load_package(hash_table.search("12"))
-truck2.load_package(hash_table.search("5"))
+    truck2.load_package(hash_table.search("1"))
+    truck2.load_package(hash_table.search("18"))
+    truck2.load_package(hash_table.search("36"))
+    truck2.load_package(hash_table.search("38"))
 
-#Loading truck 3
-truck1.load_package(hash_table.search("17"))
-truck1.load_package(hash_table.search("21"))
-truck1.load_package(hash_table.search("22"))
-truck1.load_package(hash_table.search("23"))
+    truck2.load_package(hash_table.search("13"))
+    truck2.load_package(hash_table.search("14"))
+    truck2.load_package(hash_table.search("15"))
+    truck2.load_package(hash_table.search("16"))
 
-truck1.load_package(hash_table.search("24"))
-truck1.load_package(hash_table.search("26"))
-truck1.load_package(hash_table.search("27"))
-truck1.load_package(hash_table.search("29"))
+    truck2.load_package(hash_table.search("19"))
+    truck2.load_package(hash_table.search("20"))
+    truck2.load_package(hash_table.search("29"))
+    truck2.load_package(hash_table.search("30"))
 
-truck1.load_package(hash_table.search("30"))
-truck1.load_package(hash_table.search("31"))
-truck1.load_package(hash_table.search("33"))
-truck1.load_package(hash_table.search("34"))
+    # Loading truck 1
+    truck1.load_package(hash_table.search("31"))
+    truck1.load_package(hash_table.search("34"))
+    truck1.load_package(hash_table.search("37"))
+    truck1.load_package(hash_table.search("40"))
 
-truck1.load_package(hash_table.search("35"))
-truck1.load_package(hash_table.search("37"))
-truck1.load_package(hash_table.search("39"))
-truck1.load_package(hash_table.search("40"))
+    truck1.load_package(hash_table.search("5"))
+    truck1.load_package(hash_table.search("7"))
+    truck1.load_package(hash_table.search("8"))
+    truck1.load_package(hash_table.search("10"))
 
+    truck1.load_package(hash_table.search("11"))
+    truck1.load_package(hash_table.search("12"))
+    truck1.load_package(hash_table.search("17"))
+    truck1.load_package(hash_table.search("21"))
 
-# # #Validate the packages for a given truck
-# for current_package in truck2.packages:
-#     print(current_package) # can do a .address to grab individual package properties
+    truck1.load_package(hash_table.search("22"))
+    truck1.load_package(hash_table.search("23"))
+    truck1.load_package(hash_table.search("24"))
+    truck1.load_package(hash_table.search("26"))
 
+load_all_trucks()
 
 #Validate the packages for a given truck
-# for current_package in truck3.packages:
+# for current_package in truck1.packages:
 #     print(current_package)
 
 #The delivery address for package #9, Third District Juvenile Court, is wrong and will be corrected at 10:20 a.m.
 # WGUPS is aware that the address is incorrect and will be updated at 10:20 a.m. However, WGUPS does not know the
 # correct address (410 S. State St., Salt Lake City, UT 84111) until 10:20 a.m.
+
+# def truck_deliver_packages(truck):
+#     miles_traveled = 0
+#     time = 0
+#     for address in truck.packages.address:
+#         min_distance(address)
+
+# def nearest_neighbor(truck):
+# route_mileage = 0
+for current_package in truck1.packages:
+    print(distance_between(current_package.address,truck1.current_address))
+
+for current_package in truck2.packages:
+    print(distance_between(current_package.address,truck2.current_address))
+
+for current_package in truck3.packages:
+    print(distance_between(current_package.address,truck3.current_address))
+
+# hours = distance / speed
