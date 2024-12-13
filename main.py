@@ -31,8 +31,6 @@ def load_package_data():
             hash_table.insert(package_id,all_packages)
 
 
-
-
 load_package_data()
 
 #validating hash table and that packages were inserted properly
@@ -80,8 +78,12 @@ load_address_data()
 # validate address data
 # print(address_data)
 
+
+#returns x,y distance value from distance table
 def distance_between(address1,address2):
+    address1 = address_data.index(address1)
+    address2 = address_data.index(address2)
     return distance_data[address1][address2]
 
 #validate distance between function
-print(distance_between(1,2))
+#print(distance_between("4001 South 700 East","177 W Price Ave"))
