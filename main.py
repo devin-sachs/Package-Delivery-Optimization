@@ -1,6 +1,7 @@
 import csv
 import hash
 import package
+import truck
 
 distance_data = []
 address_data  = []
@@ -24,7 +25,7 @@ def load_package_data():
 
             #create package object
             all_packages = package.Package(package_id, address, city, state, zip_code, delivery_deadline, weight, special_notes)
-            # print(all_packages)
+            print(all_packages)
 
             #insert into hash table
 
@@ -78,7 +79,6 @@ load_address_data()
 # validate address data
 # print(address_data)
 
-
 #returns x,y distance value from distance table
 def distance_between(address1,address2):
     address1 = address_data.index(address1)
@@ -87,3 +87,78 @@ def distance_between(address1,address2):
 
 #validate distance between function
 #print(distance_between("4001 South 700 East","177 W Price Ave"))
+
+def min_distance(from_address,truck_packages):
+    for truck_package in truck_packages:
+        distance_between(from_address, truck_package.packages[truck_package.address],)
+
+truck1 = truck.Truck(1)
+truck2 = truck.Truck(2)
+truck3 = truck.Truck(3)
+
+# Loading truck 3 with certain special notes packages
+truck3.load_package(hash_table.search("9")) # package has wrong address
+truck3.load_package(hash_table.search("6")) # some don't arrive until 9:05am
+truck3.load_package(hash_table.search("25")) #the rest don't fit with the rest of the trucks
+truck3.load_package(hash_table.search("28"))
+truck3.load_package(hash_table.search("32"))
+truck3.load_package(hash_table.search("1"))
+truck3.load_package(hash_table.search("2"))
+truck3.load_package(hash_table.search("4"))
+
+
+#Loading truck 2
+truck2.load_package(hash_table.search("3")) # packages must be on truck 2 or delivered together
+truck2.load_package(hash_table.search("18"))
+truck2.load_package(hash_table.search("36"))
+truck2.load_package(hash_table.search("38"))
+
+truck2.load_package(hash_table.search("20"))
+truck2.load_package(hash_table.search("16"))
+truck2.load_package(hash_table.search("13"))
+truck2.load_package(hash_table.search("14"))
+
+truck2.load_package(hash_table.search("15"))
+truck2.load_package(hash_table.search("19"))
+truck2.load_package(hash_table.search("7"))
+truck2.load_package(hash_table.search("8"))
+
+truck2.load_package(hash_table.search("10"))
+truck2.load_package(hash_table.search("11"))
+truck2.load_package(hash_table.search("12"))
+truck2.load_package(hash_table.search("5"))
+
+#Loading truck 3
+truck1.load_package(hash_table.search("17"))
+truck1.load_package(hash_table.search("21"))
+truck1.load_package(hash_table.search("22"))
+truck1.load_package(hash_table.search("23"))
+
+truck1.load_package(hash_table.search("24"))
+truck1.load_package(hash_table.search("26"))
+truck1.load_package(hash_table.search("27"))
+truck1.load_package(hash_table.search("29"))
+
+truck1.load_package(hash_table.search("30"))
+truck1.load_package(hash_table.search("31"))
+truck1.load_package(hash_table.search("33"))
+truck1.load_package(hash_table.search("34"))
+
+truck1.load_package(hash_table.search("35"))
+truck1.load_package(hash_table.search("37"))
+truck1.load_package(hash_table.search("39"))
+truck1.load_package(hash_table.search("40"))
+
+
+# # #Validate the packages for a given truck
+# for current_package in truck2.packages:
+#     print(current_package) # can do a .address to grab individual package properties
+
+
+#Validate the packages for a given truck
+# for current_package in truck3.packages:
+#     print(current_package)
+
+#The delivery address for package #9, Third District Juvenile Court, is wrong and will be corrected at 10:20 a.m.
+# WGUPS is aware that the address is incorrect and will be updated at 10:20 a.m. However, WGUPS does not know the
+# correct address (410 S. State St., Salt Lake City, UT 84111) until 10:20 a.m.
