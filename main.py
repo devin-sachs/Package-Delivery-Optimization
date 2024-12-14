@@ -7,7 +7,6 @@ import datetime
 distance_data = []
 address_data  = []
 
-
 hash_table = hash.ChainingHashTable()
 
 def load_package_data():
@@ -15,7 +14,7 @@ def load_package_data():
         package_rows = csv.reader(packageCSV, delimiter=',')
         next(package_rows)  # skip header
         for package_csv in package_rows:
-            package_id = package_csv[0]
+            package_id = int(package_csv[0])
             address = package_csv[1]
             city = package_csv[2]
             state = package_csv[3]
@@ -25,7 +24,7 @@ def load_package_data():
             special_notes = package_csv[7]
 
             #create package object
-            all_packages = package.Package(package_id, address, city, state, zip_code, delivery_deadline, weight, special_notes)
+            all_packages = package.Package(package_id, address, city, state, zip_code, delivery_deadline, weight, special_notes=special_notes)
             # print(all_packages)
 
             #insert into hash table
@@ -92,12 +91,48 @@ def min_distance(from_address,truck_packages):
     for truck_package in truck_packages:
         return distance_between(from_address, truck_packages.packages[truck_package.address])
 
-# min_distance()
-# TO DO - COME BACK TO WORK ON THIS FUNCTION
 
 truck1 = truck.Truck(1)
 truck2 = truck.Truck(2)
 truck3 = truck.Truck(3)
+
+
+# TO DO: More work to do here, see if this logic is feasible to continue.
+#try to sort packages by deadlines, notes and priority first then load them into the trucks create seperate lists????
+package_set_truck_one = set()
+package_set_truck_two = set()
+package_set_truck_three = set()
+package_set_truck_anywhere = set()
+
+
+for package in range(1,41):
+    package_object = hash_table.search(package)
+    if "Delayed" in package_object.special_notes:
+        package_set_truck_three.add(package_object)
+    if "truck 2" in package_object.special_notes:
+        package_set_truck_two.add(package_object)
+    if package_object.delivery_deadline == "9:00 AM":
+        package_set_truck_one.add(package_object)
+    elif package_object.delivery_deadline == "10:30 AM":
+        package_set_truck_two.add(package_object)
+    else:
+        package_set_truck_anywhere.add(package_object)
+
+print("Truck 1: ")
+for package in package_set_truck_one:
+    print(package)
+
+print("\nTruck 2: ")
+for package in package_set_truck_two:
+    print(package)
+
+print("\nTruck 3: ")
+for package in package_set_truck_three:
+    print(package)
+
+print("\nTruck needed: ")
+for package in package_set_truck_anywhere:
+    print(package)
 
 # Manually loading packages in trucks
 
@@ -166,41 +201,57 @@ load_all_trucks()
 # WGUPS is aware that the address is incorrect and will be updated at 10:20 a.m. However, WGUPS does not know the
 # correct address (410 S. State St., Salt Lake City, UT 84111) until 10:20 a.m.
 
-# def truck_deliver_packages(truck):
-#     miles_traveled = 0
-#     time = 0
-#     for address in truck.packages.address:
-#         min_distance(address)
+
+#Flush this part out afterward when packages are sorted slightly better
 
 def deliver_packages(truck):
     route_mileage = 0
+    time = datetime.timedelta(hours = 8, minutes = 0, seconds = 0)
+    print(time)
     for current_package in truck.packages:
         current_package.set_status("en route")
         if current_package.delivery_deadline == "9:00 AM":
             route_mileage += distance_between(truck.current_address,current_package.address)
+            package_time = distance_between(truck.current_address,current_package.address) / 18
+            time_to_add = datetime.timedelta(hours = package_time)
+            time += time_to_add
+            current_package.delivery_time = time
             truck.current_address = current_package.address
             current_package.set_status("delivered")
 
         elif current_package.delivery_deadline == "10:30 AM":
             route_mileage += distance_between(truck.current_address,current_package.address)
+            package_time = distance_between(truck.current_address,current_package.address) / 18
+            time_to_add = datetime.timedelta(hours = package_time)
+            time += time_to_add
+            current_package.delivery_time = time
             truck.current_address = current_package.address
             current_package.set_status("delivered")
 
         elif current_package.delivery_deadline == "EOD":
             route_mileage += distance_between(truck.current_address,current_package.address)
+            package_time = distance_between(truck.current_address,current_package.address) / 18
+            time_to_add = datetime.timedelta(hours = package_time)
+            time += time_to_add
+            current_package.delivery_time = time
             truck.current_address = current_package.address
             current_package.set_status("delivered")
 
     return route_mileage
 
-print(deliver_packages(truck1))
-print(deliver_packages(truck2))
-print(deliver_packages(truck3))
+# print(deliver_packages(truck1))
+# print(deliver_packages(truck2))
+# print(deliver_packages(truck3))
 
 # for current_package in truck2.packages:
 #     print(distance_between(current_package.address,truck2.current_address))
 #
-# for current_package in truck3.packages:
-#     print(distance_between(current_package.address,truck3.current_address))
+# for current_package in truck1.packages:
+#     print(current_package)
 
 # hours = distance / speed
+
+# for i in range(len(hash_table.table) + 1):
+#     print("Package: {}".format(hash_table.table[i - 1]))
+#
+# print(hash_table)
