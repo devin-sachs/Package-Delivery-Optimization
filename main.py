@@ -2,6 +2,7 @@ import csv
 import hash
 import package
 import truck
+import datetime
 
 distance_data = []
 address_data  = []
@@ -56,7 +57,6 @@ def load_distance_data():
 
 
             #insert into hash table
-
 
 load_distance_data()
 
@@ -172,15 +172,35 @@ load_all_trucks()
 #     for address in truck.packages.address:
 #         min_distance(address)
 
-# def nearest_neighbor(truck):
-# route_mileage = 0
-for current_package in truck1.packages:
-    print(distance_between(current_package.address,truck1.current_address))
+def deliver_packages(truck):
+    route_mileage = 0
+    for current_package in truck.packages:
+        current_package.set_status("en route")
+        if current_package.delivery_deadline == "9:00 AM":
+            route_mileage += distance_between(truck.current_address,current_package.address)
+            truck.current_address = current_package.address
+            current_package.set_status("delivered")
 
-for current_package in truck2.packages:
-    print(distance_between(current_package.address,truck2.current_address))
+        elif current_package.delivery_deadline == "10:30 AM":
+            route_mileage += distance_between(truck.current_address,current_package.address)
+            truck.current_address = current_package.address
+            current_package.set_status("delivered")
 
-for current_package in truck3.packages:
-    print(distance_between(current_package.address,truck3.current_address))
+        elif current_package.delivery_deadline == "EOD":
+            route_mileage += distance_between(truck.current_address,current_package.address)
+            truck.current_address = current_package.address
+            current_package.set_status("delivered")
+
+    return route_mileage
+
+print(deliver_packages(truck1))
+print(deliver_packages(truck2))
+print(deliver_packages(truck3))
+
+# for current_package in truck2.packages:
+#     print(distance_between(current_package.address,truck2.current_address))
+#
+# for current_package in truck3.packages:
+#     print(distance_between(current_package.address,truck3.current_address))
 
 # hours = distance / speed
