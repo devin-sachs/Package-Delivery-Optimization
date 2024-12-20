@@ -169,8 +169,8 @@ def prioritize_delivery_time(truck):
 
 #function delivers the packages given a truck and start time
 def deliver_packages(truck, start_time):
-    print("Truck", truck.truck_id)
-    print(start_time)
+    # print("Truck", truck.truck_id)
+    # print(start_time)
     route_mileage = 0
     time = start_time
     for current_package in truck.packages:
@@ -182,7 +182,7 @@ def deliver_packages(truck, start_time):
         current_package.delivery_time = time
         truck.current_address = current_package.address
         current_package.set_status("delivered")
-        print(time)
+        # print(time)
     return route_mileage, time
 
 
@@ -209,16 +209,20 @@ load_address_data()
 # validate address data
 # print(address_data)
 
+#instantiate truck objects for truck1,2 and 3
 truck1 = truck.Truck(1)
 truck2 = truck.Truck(2)
 truck3 = truck.Truck(3)
 
+#load up the trucks
 load_all_trucks()
 
+#sort the trucks by nearest neigbhor "greedy" algorithm
 nearest_neighbor(truck1)
 nearest_neighbor(truck2)
 nearest_neighbor(truck3)
 
+#perform another sort, taking into account the delivery deadlines
 prioritize_delivery_time(truck1)
 prioritize_delivery_time(truck2)
 prioritize_delivery_time(truck3)
@@ -226,6 +230,7 @@ prioritize_delivery_time(truck3)
 first_leave_time = datetime.timedelta(hours=8, minutes=0, seconds=0)
 second_leave_time = datetime.timedelta(hours=9, minutes=5, seconds=0)
 
+#send truck 1 off for their route. tuple unpacking to define the mileage and return time. Repeat for other trucks
 truck_1_mileage, truck1_return_time = deliver_packages(truck1,first_leave_time)
 
 #Adding time to travel back to the hub and switch trucks
