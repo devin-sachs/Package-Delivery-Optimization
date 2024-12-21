@@ -27,3 +27,9 @@ class Package:
             self.delivery_status = "en route "
         elif input_status == "delivered":
             self.delivery_status = "delivered"
+
+    def update_delivery(self, new_address, new_city, new_state, new_zip):
+        self.address = new_address
+        self.city = new_city
+        self.state = new_state
+        self.zip_code = new_zip

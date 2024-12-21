@@ -187,12 +187,17 @@ def time_to_timedelta(time_obj):
 def deliver_packages(truck, start_time, end_time = datetime.datetime.strptime("20:00",time_format).time() ):
     # print("Truck", truck.truck_id)
     # print(start_time)
+    package_3_update_time = datetime.datetime.strptime("10:20",time_format).time()
+    update_package_3_delta = time_to_timedelta(package_3_update_time)
     route_mileage = 0
     time = start_time
     end_time = time_to_timedelta(end_time)  # Convert end_time to timedelta
     if time < end_time:
         for current_package in truck.packages:
             current_package.set_status("en route")
+    if time >= update_package_3_delta:
+        hash_table.search(9).update_delivery("410 S. State St.", "Salt Lake City", "UT", "84111")
+
 
     for current_package in truck.packages:
         # current_package.set_status("en route")
