@@ -1,12 +1,14 @@
 #Devin Sachs
 #Student ID: 011292435
-#C950 Performance Assesment - Data Structures & Algorithms II
+#C950 Performance Assessment - Data Structures & Algorithms II
 
 import csv
 import hash
 import package
 import truck
 import datetime
+
+time_format = "%H:%M"
 
 distance_data = []
 address_data = []
@@ -129,6 +131,7 @@ def load_all_trucks():
     truck1.load_package(hash_table.search(16))
     truck1.load_package(hash_table.search(34))
 
+
 # This function sorts packages once loaded inside truck
 def nearest_neighbor(truck):
     current_package = truck.packages[0]
@@ -156,6 +159,7 @@ def nearest_neighbor(truck):
 
     truck.packages = sorted_order
 
+
 #Modifies truck package order based on delivery deadlines
 def prioritize_delivery_time(truck):
     def parse_time(deadline):
@@ -167,112 +171,200 @@ def prioritize_delivery_time(truck):
             return (1,float('inf'))
     truck.packages.sort(key=lambda package: parse_time(package.delivery_deadline))
 
+
+def time_to_timedelta(time_obj):
+# Convert time object to timedelta since timedelta can be used for comparison and arithmetic
+    return datetime.timedelta(hours=time_obj.hour, minutes=time_obj.minute, seconds=time_obj.second)
+
+
 #function delivers the packages given a truck and start time
-def deliver_packages(truck, start_time):
+def deliver_packages(truck, start_time, end_time = datetime.datetime.strptime("20:00",time_format).time() ):
     # print("Truck", truck.truck_id)
     # print(start_time)
     route_mileage = 0
     time = start_time
+    end_time = time_to_timedelta(end_time)  # Convert end_time to timedelta
+    if time < end_time:
+        for current_package in truck.packages:
+            current_package.set_status("en route")
+
     for current_package in truck.packages:
-        current_package.set_status("en route")
-        route_mileage += distance_between(truck.current_address, current_package.address)
-        package_time = distance_between(truck.current_address, current_package.address) / truck.speed
-        time_to_add = datetime.timedelta(hours=package_time)
-        time += time_to_add
-        current_package.delivery_time = time
-        truck.current_address = current_package.address
-        current_package.set_status("delivered")
-        # print(time)
+        # current_package.set_status("en route")
+        if time < end_time:
+            route_mileage += distance_between(truck.current_address, current_package.address)
+            package_time = distance_between(truck.current_address, current_package.address) / truck.speed
+            time_to_add = datetime.timedelta(hours=package_time)
+            time += time_to_add
+            current_package.delivery_time = time
+            truck.current_address = current_package.address
+            current_package.set_status("delivered")
+            # print(time)
+        else:
+            break
     return route_mileage, time
 
 
-load_package_data()
+def run_package_delivery_simulation():
+    # reset truck address to package hub so mileage doesn't get thrown off when re-running simulation for other scenarios
+    truck1.set_address("4001 South 700 East")
+    truck2.set_address("4001 South 700 East")
+    truck3.set_address("4001 South 700 East")
 
-#validating hash table and that packages were inserted properly
+    # send truck 1 off for their route. tuple unpacking to define the mileage and return time. Repeat for other trucks
+    truck_1_mileage, truck1_return_time = deliver_packages(truck1, first_leave_time)
 
-# for i in range(len(hash_table.table) + 1):
-#     print("Package: {}".format(hash_table.table[i - 1]))
-#
-# print(hash_table)
+    # Adding time to travel back to the hub and switch trucks
+    # Adding additional mileage to route
+    back_to_hub = distance_between(truck1.packages[len(truck1.packages) - 1].address,
+                                   "4001 South 700 East") / truck1.speed
+    time_back_to_hub = datetime.timedelta(hours=back_to_hub)
+    truck1_return_time += time_back_to_hub
+    truck_1_mileage += back_to_hub
 
-load_distance_data()
+    # Second driver heading out with a later start time to allow the late packages to be delivered on time
+    truck_3_mileage, truck3_return_time = deliver_packages(truck3, second_leave_time)
 
-#validate distance data
-# print(distance_data[5][2])
-# print(distance_data[2][5])
-# for i in range(27):
-#     print(distance_data[i])
+    # Adding time to travel back to the hub
+    # Adding additional mileage to route
+    back_to_hub = distance_between(truck3.packages[len(truck3.packages) - 1].address,
+                                   "4001 South 700 East") / truck3.speed
+    time_back_to_hub = datetime.timedelta(hours=back_to_hub)
+    truck3_return_time += time_back_to_hub
 
+    # First driver comes back and picks up truck 2 (final truck/trip) to deliver all the EOD packages
+    truck_2_mileage, truck2_return_time = deliver_packages(truck2, truck1_return_time)
 
-load_address_data()
-
-# validate address data
-# print(address_data)
-
-#instantiate truck objects for truck1,2 and 3
-truck1 = truck.Truck(1)
-truck2 = truck.Truck(2)
-truck3 = truck.Truck(3)
-
-#load up the trucks
-load_all_trucks()
-
-#sort the trucks by nearest neigbhor "greedy" algorithm
-nearest_neighbor(truck1)
-nearest_neighbor(truck2)
-nearest_neighbor(truck3)
-
-#perform another sort, taking into account the delivery deadlines
-prioritize_delivery_time(truck1)
-prioritize_delivery_time(truck2)
-prioritize_delivery_time(truck3)
-
-first_leave_time = datetime.timedelta(hours=8, minutes=0, seconds=0)
-second_leave_time = datetime.timedelta(hours=9, minutes=5, seconds=0)
-
-#send truck 1 off for their route. tuple unpacking to define the mileage and return time. Repeat for other trucks
-truck_1_mileage, truck1_return_time = deliver_packages(truck1,first_leave_time)
-
-#Adding time to travel back to the hub and switch trucks
-#Adding additional mileage to route
-back_to_hub = distance_between(truck1.packages[len(truck1.packages) - 1].address, "4001 South 700 East") / truck1.speed
-time_back_to_hub = datetime.timedelta(hours=back_to_hub)
-truck1_return_time += time_back_to_hub
-truck_1_mileage += back_to_hub
-
-#Second driver heading out with a later start time to allow the late packages to be delivered on time
-truck_3_mileage, truck3_return_time = deliver_packages(truck3,second_leave_time)
-
-#Adding time to travel back to the hub
-#Adding additional mileage to route
-back_to_hub = distance_between(truck3.packages[len(truck3.packages) - 1].address, "4001 South 700 East") / truck3.speed
-time_back_to_hub = datetime.timedelta(hours=back_to_hub)
-truck3_return_time += time_back_to_hub
-
-#First driver comes back and picks up truck 2 (final truck/trip) to deliver all the EOD packages
-truck_2_mileage, truck2_return_time = deliver_packages(truck2,truck1_return_time)
-
-#Adding time to travel back to the hub and switch trucks
-#Adding additional mileage to route
-back_to_hub = distance_between(truck2.packages[len(truck2.packages) - 1].address, "4001 South 700 East") / truck2.speed
-time_back_to_hub = datetime.timedelta(hours=back_to_hub)
-truck2_return_time += time_back_to_hub
+    # Adding time to travel back to the hub and switch trucks
+    # Adding additional mileage to route
+    back_to_hub = distance_between(truck2.packages[len(truck2.packages) - 1].address,
+                                   "4001 South 700 East") / truck2.speed
+    time_back_to_hub = datetime.timedelta(hours=back_to_hub)
+    truck2_return_time += time_back_to_hub
 
 
-print("truck 1: \n" , truck_1_mileage, truck1_return_time)
-print("truck 2: \n" , truck_2_mileage, truck2_return_time)
-print("truck 3: \n" , truck_3_mileage, truck3_return_time)
+    total_mileage = truck_1_mileage + truck_2_mileage + truck_3_mileage
 
-total_mileage = truck_1_mileage + truck_2_mileage + truck_3_mileage
-
-print_packages(truck1)
-print_packages(truck2)
-print_packages(truck3)
-
-print("total mileage: ", total_mileage)
+    return total_mileage
 
 
-# for i in range(len(hash_table.table) + 1):
-#     print("Package: {}".format(hash_table.table[i - 1]))
-#
-# print(hash_table)
+while True:
+    print("\n***************************************\n")
+    print("Welcome to my program! Please type in one of the below options as 1,2,3,4 and press enter to continue\n")
+
+    print("1: Print All Package Statuses and Total Mileage")
+    print("2: Search for all Packages by Time")
+    print("3: View Truck Summary")
+    print("4: Exit Program\n")
+
+    print("***************************************")
+
+    load_package_data()
+
+    # validating hash table and that packages were inserted properly
+
+    # for i in range(len(hash_table.table) + 1):
+    #     print("Package: {}".format(hash_table.table[i - 1]))
+    #
+    # print(hash_table)
+
+    load_distance_data()
+
+    # validate distance data
+    # print(distance_data[5][2])
+    # print(distance_data[2][5])
+    # for i in range(27):
+    #     print(distance_data[i])
+
+    load_address_data()
+
+    # validate address data
+    # print(address_data)
+
+    # instantiate truck objects for truck1,2 and 3
+    truck1 = truck.Truck(1)
+    truck2 = truck.Truck(2)
+    truck3 = truck.Truck(3)
+
+    # load up the trucks
+    load_all_trucks()
+
+    # sort the trucks by nearest neighbor "greedy" algorithm
+    nearest_neighbor(truck1)
+    nearest_neighbor(truck2)
+    nearest_neighbor(truck3)
+
+    # perform another sort, taking into account the delivery deadlines
+    prioritize_delivery_time(truck1)
+    prioritize_delivery_time(truck2)
+    prioritize_delivery_time(truck3)
+
+    user_input = int(input())
+    header = "Package ID, Address, City, Zip, Delivery Deadline, Weight, Status, Delivery Time, Special notes"
+
+    first_leave_time = datetime.timedelta(hours=8, minutes=0, seconds=0)
+    second_leave_time = datetime.timedelta(hours=9, minutes=5, seconds=0)
+
+    if user_input == 4:
+        print("Simulation ended")
+        break
+
+    elif user_input == 3:
+        run_package_delivery_simulation()
+
+        print("")
+        print(f"Truck 1: \nTruck Mileage, Truck Return Time\n  {truck_1_mileage:.2f}, {truck1_return_time}\n")
+        print(header)
+        print_packages(truck1)
+        print("\n")
+
+        print(f"Truck 2: \nTruck Mileage, Truck Return Time\n {truck_2_mileage:.2f}, {truck2_return_time}\n")
+        print(header)
+        print_packages(truck2)
+        print("\n")
+
+        print(f"Truck 3: \nTruck Mileage, Truck Return Time\n {truck_3_mileage:.2f}, {truck3_return_time}\n")
+        print(header)
+        print_packages(truck3)
+
+    elif user_input == 2:
+
+        search_time = input("\nPlease enter a time to search for:(HH:MM) ")
+        parsed_time = datetime.datetime.strptime(search_time,time_format).time()
+
+        truck_1_mileage, truck1_return_time = deliver_packages(truck1, first_leave_time,parsed_time)
+        truck_3_mileage, truck3_return_time = deliver_packages(truck3, second_leave_time, parsed_time)
+        truck_2_mileage, truck2_return_time = deliver_packages(truck2, truck1_return_time, parsed_time)
+
+        print("\n",header)
+
+        for i in range(1, 41):
+            print(hash_table.search(i))
+
+        print("")
+        print(f"Truck 1: \nTruck Mileage, Truck Return Time\n  {truck_1_mileage:.2f}, {truck1_return_time}\n")
+        print(header)
+        print_packages(truck1)
+        print("\n")
+
+        print(f"Truck 2: \nTruck Mileage, Truck Return Time\n {truck_2_mileage:.2f}, {truck2_return_time}\n")
+        print(header)
+        print_packages(truck2)
+        print("\n")
+
+        print(f"Truck 3: \nTruck Mileage, Truck Return Time\n {truck_3_mileage:.2f}, {truck3_return_time}\n")
+        print(header)
+        print_packages(truck3)
+
+        total_mileage = truck_1_mileage + truck_2_mileage + truck_3_mileage
+
+        print("total mileage: ", total_mileage)
+
+
+    elif  user_input == 1:
+        total_mileage = run_package_delivery_simulation()
+
+        print(header)
+        for i in range (1,41):
+            print(hash_table.search(i))
+
+        print("total mileage: ", total_mileage)

@@ -3,7 +3,7 @@
 #C950 Performance Assesment - Data Structures & Algorithms II
 
 class Package:
-    def __init__(self, package_id, address, city, state,zip_code, delivery_deadline,weight,delivery_time = "", delivery_status = "at the hub",special_notes=""):
+    def __init__(self, package_id, address, city, state,zip_code, delivery_deadline,weight,delivery_time = "not yet delivered", delivery_status = "at the hub",special_notes=""):
         self.package_id = package_id
         self.address = address
         self.city = city
