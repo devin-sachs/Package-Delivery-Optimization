@@ -1,6 +1,6 @@
 #Devin Sachs
 #Student ID: 011292435
-#C950 Performance Assesment - Data Structures & Algorithms II
+#C950 Performance Assessment - Data Structures & Algorithms II
 
 class Truck:
     def __init__(self,truck_id,current_address = "4001 South 700 East", speed = 18):

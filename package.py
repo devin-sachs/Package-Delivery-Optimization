@@ -1,6 +1,6 @@
 #Devin Sachs
 #Student ID: 011292435
-#C950 Performance Assesment - Data Structures & Algorithms II
+#C950 Performance Assessment - Data Structures & Algorithms II
 
 class Package:
     def __init__(self, package_id, address, city, state,zip_code, delivery_deadline,weight,delivery_time = "not yet delivered", delivery_status = "at the hub",special_notes=""):

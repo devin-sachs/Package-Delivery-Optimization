@@ -1,6 +1,6 @@
 #Devin Sachs
 #Student ID: 011292435
-#C950 Performance Assesment - Data Structures & Algorithms II
+#C950 Performance Assessment - Data Structures & Algorithms II
 
 # C950 - Webinar-1 - Let’s Go Hashing
 # W-1_ChainingHashTable_zyBooks_Key-Value.py
