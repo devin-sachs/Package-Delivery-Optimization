@@ -8,13 +8,19 @@ import package
 import truck
 import datetime
 
+
+ #Establish time_format for later use
 time_format = "%H:%M"
 
+#Create empty lists to be populated with data from CSV files
 distance_data = []
 address_data = []
 
+#Create hash table object to insert data into from CSV files
 hash_table = hash.ChainingHashTable()
 
+
+#Function to read package data
 def load_package_data():
     with open("WGUPS Package File-cleanup.csv") as packageCSV:
         package_rows = csv.reader(packageCSV, delimiter=',')
@@ -37,7 +43,7 @@ def load_package_data():
 
             hash_table.insert(package_id, all_packages)
 
-
+#Function to read distance data
 def load_distance_data():
     with open("WGUPS Distance Table-cleaned.csv") as distance_CSV_file:
         csv_reader = csv.reader(distance_CSV_file, delimiter=',')
@@ -53,7 +59,7 @@ def load_distance_data():
 
             #insert into hash table
 
-
+#Function to read address data
 def load_address_data():
     with open("WGUPS Address Table-cleaned.csv", encoding='utf-8-sig') as address_CSV_file:
         csv_reader = csv.reader(address_CSV_file, delimiter=',')
@@ -171,7 +177,7 @@ def prioritize_delivery_time(truck):
             return (1,float('inf'))
     truck.packages.sort(key=lambda package: parse_time(package.delivery_deadline))
 
-
+#Converts user input time to a time delta object. This allows us to do comparisons, this is used for specifying a lookup time later on
 def time_to_timedelta(time_obj):
 # Convert time object to timedelta since timedelta can be used for comparison and arithmetic
     return datetime.timedelta(hours=time_obj.hour, minutes=time_obj.minute, seconds=time_obj.second)
@@ -203,7 +209,8 @@ def deliver_packages(truck, start_time, end_time = datetime.datetime.strptime("2
             break
     return route_mileage, time
 
-
+#This runs the above deliver_packages function in specific way, adding the mileage to go back to the station too.
+#This helps reduce some repeat code later on
 def run_package_delivery_simulation():
     # reset truck address to package hub so mileage doesn't get thrown off when re-running simulation for other scenarios
     truck1.set_address("4001 South 700 East")
@@ -244,9 +251,9 @@ def run_package_delivery_simulation():
 
     total_mileage = truck_1_mileage + truck_2_mileage + truck_3_mileage
 
-    return total_mileage
+    return total_mileage, truck_1_mileage, truck_2_mileage, truck_3_mileage, truck1_return_time, truck2_return_time, truck3_return_time
 
-
+#Command Line Interface starts here
 while True:
     print("\n***************************************\n")
     print("Welcome to my program! Please type in one of the below options as 1,2,3,4 and press enter to continue\n")
@@ -258,8 +265,8 @@ while True:
 
     print("***************************************")
 
-    load_package_data()
 
+    load_package_data()
     # validating hash table and that packages were inserted properly
 
     # for i in range(len(hash_table.table) + 1):
@@ -298,18 +305,24 @@ while True:
     prioritize_delivery_time(truck2)
     prioritize_delivery_time(truck3)
 
+    # read user input
     user_input = int(input())
+
+    # create header string
     header = "Package ID, Address, City, Zip, Delivery Deadline, Weight, Status, Delivery Time, Special notes"
 
+    # generating times for specific truck delivery departures
     first_leave_time = datetime.timedelta(hours=8, minutes=0, seconds=0)
     second_leave_time = datetime.timedelta(hours=9, minutes=5, seconds=0)
 
+    # end the program if user inputs 4
     if user_input == 4:
         print("Simulation ended")
         break
 
+    # provides a summary of each truck packages and their status
     elif user_input == 3:
-        run_package_delivery_simulation()
+        total_mileage, truck_1_mileage, truck_2_mileage, truck_3_mileage, truck1_return_time, truck2_return_time, truck3_return_time = run_package_delivery_simulation()
 
         print("")
         print(f"Truck 1: \nTruck Mileage, Truck Return Time\n  {truck_1_mileage:.2f}, {truck1_return_time}\n")
@@ -361,7 +374,7 @@ while True:
 
 
     elif  user_input == 1:
-        total_mileage = run_package_delivery_simulation()
+        total_mileage, truck_1_mileage, truck_2_mileage, truck_3_mileage, truck1_return_time, truck2_return_time, truck3_return_time = run_package_delivery_simulation()
 
         print(header)
         for i in range (1,41):
